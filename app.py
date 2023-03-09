@@ -10,7 +10,7 @@ def index():
   if request.method == 'POST':
     url = request.form['url']
     if not url:
-      flash('The URL is required!')
+      # flash('The URL is required!')
       return redirect(url_for('index'))
 
     with sqlite3.connect(db) as con:
@@ -34,12 +34,12 @@ def url_redirect(id):
                                 ' WHERE id = (?)', (id,)
                                 )
     url_data = cur.fetchone()
-    original_url = url_data['original_url']
-    clicks = url_data['clicks']
+    print(url_data)
+    original_url, clicks = url_data
 
     cur.execute('UPDATE urls SET clicks = ? WHERE id = ?', (clicks+1, id))
     con.commit()
-  return redirect(original_url)
+  return redirect(f"http://{original_url}")
 
 @app.route('/stats')
 def stats():
